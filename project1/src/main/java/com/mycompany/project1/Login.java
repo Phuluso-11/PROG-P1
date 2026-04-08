@@ -32,7 +32,9 @@ public class Login {
     }
 
     public boolean checkCellPhoneNumber() {
-        return cellPhoneNumber.matches("^\\+[0-9]{10}$");
+        // Regex: + followed by country code and number, total 10-12 digits
+// Reference: https://www.w3schools.com/java/java_regex.asp
+return cellPhoneNumber.matches("^\\+[0-9]{9,11}$");
     }
 
     public String registerUser() {
