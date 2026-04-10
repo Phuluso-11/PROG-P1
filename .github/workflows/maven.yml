@@ -16,5 +16,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Build and Test with Maven
+    - name: Build and Test project1
       run: mvn -f project1/pom.xml test
+    - name: Build and Test QuickChatApp
+      run: mvn -f QuickChatApp/pom.xml test
