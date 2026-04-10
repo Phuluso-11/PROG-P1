@@ -1,3 +1,6 @@
+// Author: Phuluso Kone
+// Date: 13 April 2026
+// Purpose: Login and Registration feature for QuickChatApp
 package com.mycompany.quickchatapp;
 
 import java.util.regex.Matcher;
