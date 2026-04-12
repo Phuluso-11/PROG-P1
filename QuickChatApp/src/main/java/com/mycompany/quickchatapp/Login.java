@@ -63,8 +63,11 @@ public class Login {
 
     //method to verify login details
     boolean loginUser(String enteredUsername, String enteredPassword) {
-        return this.username.equals(enteredUsername) && this.password.equals(enteredPassword);
+    if (this.username == null || this.password == null) {
+        return false;
     }
+    return this.username.equals(enteredUsername) && this.password.equals(enteredPassword);
+}
 
     //method to return login status
     String returnLoginStatus(String enteredUsername, String enteredPassword) {
