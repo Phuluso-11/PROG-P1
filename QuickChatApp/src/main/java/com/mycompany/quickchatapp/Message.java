@@ -1,3 +1,4 @@
+// Part 2 - Message class
 // Author: Phuluso Kone
 // Date: 23 May 2026
 // Purpose: Message class for QuickChatApp - Part 2 (Sending Messages)
