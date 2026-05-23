@@ -12,6 +12,7 @@
         <exec.mainClass>com.mycompany.quickchatapp.QuickChatApp</exec.mainClass>
     </properties>
     <dependencies>
+        <!-- Project dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
