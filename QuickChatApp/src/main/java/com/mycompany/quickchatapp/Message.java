@@ -61,12 +61,12 @@ public class Message {
         return id != null && id.length() <= 10;
     }
 
-    // -------------------------
+    
     // Method: checkRecipientCell
     // Ensures recipient cell number is no more than 10 chars (excl. +) and starts with international code
     // Reuses same regex logic from Login class
     // Reference: https://www.regular-expressions.info/
-    // -------------------------
+    
     public String checkRecipientCell(String cellNumber) {
         String regex = "^(\\+27|0)[6-8][0-9]{8}$";
         Pattern pattern = Pattern.compile(regex);
@@ -78,7 +78,7 @@ public class Message {
         }
     }
 
-    // -------------------------
+    // creates message hash and handles send options
     // Method: createMessageHash
     // Format: first 2 digits of ID : message number : FIRSTWORD + LASTWORD (all caps)
     // Example: 00:0:HITONIGHT
