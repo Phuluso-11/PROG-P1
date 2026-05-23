@@ -9,8 +9,6 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -165,42 +163,36 @@ public class Message {
     // Reference: https://github.com/fangyidong/json-simple (JSON.simple library)
     
     @SuppressWarnings("unchecked")
-    public void storeMessage(Message m) {
-        JSONObject messageObj = new JSONObject();
-        messageObj.put("messageID", m.getMessageID());
-        messageObj.put("messageNumber", m.getMessageNumber());
-        messageObj.put("recipient", m.getRecipient());
-        messageObj.put("messageText", m.getMessageText());
-        messageObj.put("messageHash", m.getMessageHash());
-        messageObj.put("status", m.getStatus());
-
-        // Read existing file or start fresh array
-        JSONArray messageArray = new JSONArray();
-        messageArray.add(messageObj);
-
-        try (FileWriter file = new FileWriter("storedMessages.json", true)) {
-            file.write(messageObj.toJSONString());
-            file.write(System.lineSeparator());
-            System.out.println("Message successfully stored.");
-        } catch (IOException e) {
-            System.out.println("Error storing message: " + e.getMessage());
-        }
+public void storeMessage(Message m) {
+    try (FileWriter file = new FileWriter("storedMessages.json", true)) {
+        String json = "{\"messageID\":\"" + m.getMessageID() + "\","
+                + "\"messageNumber\":" + m.getMessageNumber() + ","
+                + "\"recipient\":\"" + m.getRecipient() + "\","
+                + "\"messageText\":\"" + m.getMessageText() + "\","
+                + "\"messageHash\":\"" + m.getMessageHash() + "\","
+                + "\"status\":\"" + m.getStatus() + "\"}";
+        file.write(json);
+        file.write(System.lineSeparator());
+        System.out.println("Message successfully stored.");
+    } catch (IOException e) {
+        System.out.println("Error storing message: " + e.getMessage());
     }
+}
 
-    // -------------------------
+    
     // Static helper: generateMessageID
     // Generates a random 10-digit message ID
-    // -------------------------
+    
     public static String generateMessageID() {
         Random random = new Random();
         long id = (long) (random.nextDouble() * 9_000_000_000L) + 1_000_000_000L;
         return String.valueOf(id);
     }
 
-    // -------------------------
+    
     // Static helper: validateMessageLength
     // Checks message is within 250 characters
-    // -------------------------
+    
     public static String validateMessageLength(String messageText) {
         if (messageText.length() <= 250) {
             return "Message ready to send.";
