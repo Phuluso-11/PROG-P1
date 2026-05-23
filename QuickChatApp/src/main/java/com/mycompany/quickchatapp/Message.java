@@ -82,7 +82,7 @@ public class Message {
     // Method: createMessageHash
     // Format: first 2 digits of ID : message number : FIRSTWORD + LASTWORD (all caps)
     // Example: 00:0:HITONIGHT
-    // -------------------------
+    
     public String createMessageHash(String messageID, int messageNumber, String messageText) {
         // Get first two characters of the message ID
         String idPrefix = messageID.substring(0, 2);
@@ -102,10 +102,10 @@ public class Message {
         return hash.toUpperCase();
     }
 
-    // -------------------------
+    
     // Method: sentMessage
     // Allows user to choose send, store, or disregard
-    // -------------------------
+    
     public String sentMessage(String choice) {
         switch (choice.trim()) {
             case "1":
@@ -119,10 +119,10 @@ public class Message {
         }
     }
 
-    // -------------------------
+    
     // Method: printMessages
     // Returns all messages sent while the program is running
-    // -------------------------
+    
     public String printMessages() {
         if (sentMessages.isEmpty()) {
             return "No messages sent yet.";
@@ -140,18 +140,18 @@ public class Message {
         return sb.toString();
     }
 
-    // -------------------------
+    
     // Method: returnTotalMessages
     // Returns total number of messages sent (not stored or disregarded)
-    // -------------------------
+    
     public int returnTotalMessages() {
         return totalMessagesSent;
     }
 
-    // -------------------------
+    
     // Method: addToSentList (helper)
     // Adds a message to the static sent list
-    // -------------------------
+    
     public static void addToSentList(Message m) {
         sentMessages.add(m);
         if (m.getStatus().equals("Sent")) {
@@ -159,11 +159,11 @@ public class Message {
         }
     }
 
-    // -------------------------
+    // stores messages to JSON and prints all messages
     // Method: storeMessage
     // Stores a message to a JSON file
     // Reference: https://github.com/fangyidong/json-simple (JSON.simple library)
-    // -------------------------
+    
     @SuppressWarnings("unchecked")
     public void storeMessage(Message m) {
         JSONObject messageObj = new JSONObject();
