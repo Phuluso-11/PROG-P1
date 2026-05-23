@@ -53,10 +53,10 @@ public class Message {
     public String getMessageHash() { return messageHash; }
     public String getStatus() { return status; }
 
-    // -------------------------
+    // validates message ID and recipient cell number
     // Method: checkMessageID
     // Ensures the message ID is not more than 10 characters
-    // -------------------------
+    
     public boolean checkMessageID(String id) {
         return id != null && id.length() <= 10;
     }
