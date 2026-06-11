@@ -30,11 +30,11 @@ jobs:
 
       # Step 3: Build the project with Maven
       - name: Build with Maven
-        run: mvn -B compile --file pom.xml
+        run: mvn -B compile --file QuickChatApp/pom.xml
 
       # Step 4: Run all JUnit tests (including MessageDataTest)
       - name: Run tests
-        run: mvn -B test --file pom.xml
+        run: mvn -B test --file QuickChatApp/pom.xml
 
       # Step 5: Upload test results as artifacts for review
       - name: Upload test results
