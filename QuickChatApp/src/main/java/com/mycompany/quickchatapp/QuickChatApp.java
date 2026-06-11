@@ -1,6 +1,6 @@
 // Author: Phuluso Kone
-// Date: 23 May 2026
-// Purpose: Main application class for QuickChatApp - Part 1 + Part 2
+// Date: 10 June 2026
+// Purpose: Main application class for QuickChatApp - Part 1 + Part 2 + Part 3
 package com.mycompany.quickchatapp;
 
 import java.util.Scanner;
@@ -11,9 +11,9 @@ public class QuickChatApp {
         Scanner input = new Scanner(System.in);
         Login login = new Login();
 
-        
+        // -------------------------
         // REGISTRATION
-        
+        // -------------------------
         System.out.println("=== Registration ===");
 
         System.out.print("Please enter your first name: ");
@@ -34,7 +34,6 @@ public class QuickChatApp {
         String registrationResult = login.registerUser(firstName, lastName, username, password, cellphoneNum);
         System.out.println(registrationResult);
 
-        // If registration failed, stop the app
         if (!registrationResult.startsWith("Welcome")) {
             System.out.println("Registration failed. Please restart the application and try again.");
             input.close();
@@ -54,16 +53,12 @@ public class QuickChatApp {
         String loginResult = login.returnLoginStatus(enteredUsername, enteredPassword);
         System.out.println(loginResult);
 
-        // Only proceed to messaging if login was successful
         if (!login.loginUser(enteredUsername, enteredPassword)) {
             System.out.println("Login failed. Please restart the application and try again.");
             input.close();
             return;
         }
 
-        // Part 2 - messaging menu added
-        
-        
         System.out.println("\nWelcome to QuickChat.");
 
         // Ask user how many messages they want to send
@@ -81,31 +76,37 @@ public class QuickChatApp {
         }
 
         Message messageHandler = new Message();
+        MessageData messageData = new MessageData();
+
+        // Load any previously stored messages from JSON into the arrays
+        messageData.loadStoredMessagesFromJSON("storedMessages.json");
+
         String menuChoice = "";
 
-        // Main application loop - runs until user selects Quit
-        while (!menuChoice.equals("3")) {
+        // -------------------------
+        // MAIN MENU LOOP
+        // -------------------------
+        while (!menuChoice.equals("4")) {
             System.out.println("\n--- Main Menu ---");
             System.out.println("1) Send Messages");
             System.out.println("2) Show recently sent messages");
-            System.out.println("3) Quit");
+            System.out.println("3) Stored Messages");
+            System.out.println("4) Quit");
             System.out.print("Please select an option: ");
             menuChoice = input.nextLine().trim();
 
             switch (menuChoice) {
                 case "1":
-                    // For loop to allow user to send the set number of messages
+                    // Send messages loop
                     for (int i = 0; i < numMessages; i++) {
                         System.out.println("\n--- Message " + (i + 1) + " of " + numMessages + " ---");
 
-                        // Generate unique 10-digit message ID
                         String messageID = Message.generateMessageID();
                         System.out.println("Message ID generated: " + messageID);
 
-                        // Message number (1-based, uses loop counter)
                         int messageNumber = i;
 
-                        // Get recipient number
+                        // Get and validate recipient
                         String recipient = "";
                         while (true) {
                             System.out.print("Enter recipient cell number (with international code): ");
@@ -117,7 +118,7 @@ public class QuickChatApp {
                             }
                         }
 
-                        // Get message text (max 250 characters)
+                        // Get and validate message text
                         String messageText = "";
                         while (true) {
                             System.out.print("Enter your message (max 250 characters): ");
@@ -131,11 +132,9 @@ public class QuickChatApp {
                             }
                         }
 
-                        // Auto-generate the message hash
                         String hash = messageHandler.createMessageHash(messageID, messageNumber, messageText);
                         System.out.println("Message Hash: " + hash);
 
-                        // Ask user what to do with the message
                         System.out.println("\nWhat would you like to do with this message?");
                         System.out.println("1) Send Message");
                         System.out.println("2) Disregard Message");
@@ -146,32 +145,25 @@ public class QuickChatApp {
                         String sendResult = messageHandler.sentMessage(sendChoice);
                         System.out.println(sendResult);
 
-                        // Determine status and store/record accordingly
                         String status;
                         switch (sendChoice) {
-                            case "1":
-                                status = "Sent";
-                                break;
-                            case "2":
-                                status = "Disregarded";
-                                break;
-                            case "3":
-                                status = "Stored";
-                                break;
-                            default:
-                                status = "Unknown";
+                            case "1":  status = "Sent";        break;
+                            case "2":  status = "Disregarded"; break;
+                            case "3":  status = "Stored";      break;
+                            default:   status = "Unknown";
                         }
 
-                        // Create the message object and add to list
-                        Message newMessage = new Message(messageID, messageNumber, recipient, messageText, hash, status);
+                        Message newMessage = new Message(messageID, messageNumber, recipient,
+                                                         messageText, hash, status);
                         Message.addToSentList(newMessage);
 
-                        // Store to JSON if user chose to store
+                        // Add to our Part 3 data arrays
+                        messageData.addMessage(newMessage);
+
                         if (sendChoice.equals("3")) {
                             messageHandler.storeMessage(newMessage);
                         }
 
-                        // Display full message details after sending
                         if (sendChoice.equals("1")) {
                             System.out.println("\n--- Message Details ---");
                             System.out.println("Message ID:   " + messageID);
@@ -181,20 +173,77 @@ public class QuickChatApp {
                         }
                     }
 
-                    // Display total messages sent after the loop completes
                     System.out.println("\nTotal messages sent: " + messageHandler.returnTotalMessages());
                     break;
 
                 case "2":
-                    System.out.println("Coming Soon.");
+                    System.out.println(messageHandler.printMessages());
                     break;
 
+                // -------------------------
+                // OPTION 3: Stored Messages sub-menu (Part 3)
+                // -------------------------
                 case "3":
+                    String subChoice = "";
+                    while (!subChoice.equals("7")) {
+                        System.out.println("\n--- Stored Messages Menu ---");
+                        System.out.println("1) Display sender and recipient of all stored messages");
+                        System.out.println("2) Display the longest message");
+                        System.out.println("3) Search by Message ID");
+                        System.out.println("4) Search messages by recipient");
+                        System.out.println("5) Delete a message by hash");
+                        System.out.println("6) Display full message report");
+                        System.out.println("7) Back to main menu");
+                        System.out.print("Please select an option: ");
+                        subChoice = input.nextLine().trim();
+
+                        switch (subChoice) {
+                            case "1":
+                                System.out.println(messageData.displayStoredSenderRecipient());
+                                break;
+
+                            case "2":
+                                System.out.println("Longest Message: " + messageData.displayLongestMessage());
+                                break;
+
+                            case "3":
+                                System.out.print("Enter Message ID to search: ");
+                                String searchID = input.nextLine().trim();
+                                System.out.println(messageData.searchByMessageID(searchID));
+                                break;
+
+                            case "4":
+                                System.out.print("Enter recipient cell number to search: ");
+                                String searchRecipient = input.nextLine().trim();
+                                System.out.println(messageData.searchByRecipient(searchRecipient));
+                                break;
+
+                            case "5":
+                                System.out.print("Enter message hash to delete: ");
+                                String deleteHash = input.nextLine().trim();
+                                System.out.println(messageData.deleteMessage(deleteHash));
+                                break;
+
+                            case "6":
+                                System.out.println(messageData.displayReport());
+                                break;
+
+                            case "7":
+                                System.out.println("Returning to main menu...");
+                                break;
+
+                            default:
+                                System.out.println("Invalid option. Please select 1-7.");
+                        }
+                    }
+                    break;
+
+                case "4":
                     System.out.println("Goodbye! Thank you for using QuickChat.");
                     break;
 
                 default:
-                    System.out.println("Invalid option. Please select 1, 2, or 3.");
+                    System.out.println("Invalid option. Please select 1, 2, 3, or 4.");
             }
         }
 

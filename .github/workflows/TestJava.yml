@@ -1,0 +1,45 @@
+# TestJava.yml
+# Automates JUnit 5 tests for QuickChatApp Part 3
+# Runs on every push and pull request to main branch
+# Reference: https://www.youtube.com/watch?v=oz0Qd5H4Onk
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Java 11
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+
+      # Step 3: Build the project with Maven
+      - name: Build with Maven
+        run: mvn -B compile --file QuickChatApp/pom.xml
+
+      # Step 4: Run all JUnit tests (including MessageDataTest)
+      - name: Run tests
+        run: mvn -B test --file QuickChatApp/pom.xml
+
+      # Step 5: Upload test results as artifacts for review
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: target/surefire-reports/
